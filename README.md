@@ -1,1 +1,1 @@
-# Sample-
+As we prepare for our festive Christmas celebration in the office, we want to ensure that our culinary offerings cater to everyone's preferences. To tailor the menu to your liking, we kindly request you to indicate your preference between vegetarian and non-vegetarian options.
