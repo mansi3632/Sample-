@@ -17,3 +17,7 @@ Let's create lasting memories and spread the warmth of the season together!
 Best regards,
 [Your Name]
 [Your Contact Information, if needed]
+
+
+substring(IPColumn, 0, add(indexOf(IPColumn, '.', add(indexOf(IPColumn, '.', indexOf(IPColumn, '.') + 1), 1)), 1))
+
