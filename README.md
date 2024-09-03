@@ -93,3 +93,12 @@ namespace YourNamespace
         }
     }
 }
+
+
+dynamic jsonData = JsonSerializer.Deserialize<dynamic>(content);
+
+            // Access the specific field
+            string specificFieldValue = jsonData.SpecificField;
+
+            // Update the TextBlock
+            textBlock.Text = specificFieldValue
