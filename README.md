@@ -1,23 +1,29 @@
-As we prepare for our festive Christmas celebration in the office, we want to ensure that our culinary offerings cater to everyone's preferences. To tailor the menu to your liking, we kindly request you to indicate your preference between vegetarian and non-vegetarian options.
-Subject: Join the Festive Fun - Secret Santa Gift Exchange! 🎁🎅
+# Replace with your actual API URL and token
+$apiUrl = "https://api.example.com/data"
+$token = "your_token"
 
-Dear [Team/Colleagues],
+# Create a WebRequest object
+$request = [System.Net.WebRequest]::Create($apiUrl)
 
-As we usher in the holiday season, we're thrilled to announce our upcoming celebration next week! To make it extra special, we invite each of you to participate in our Secret Santa Gift Exchange.
+# Set the method to GET
+$request.Method = "GET"
 
-Here's how it works:
-- Bring a wrapped gift not exceeding ₹200.
-- On the celebration day, we'll randomly assign Secret Santas.
-- Experience the joy of giving and receiving in this festive exchange.
+# Set the authorization header with the token
+$request.Headers.Add("Authorization", "Bearer $token")
 
-RSVP by [Insert Deadline] to let us know you're joining the celebration and participating in the Secret Santa exchange.
+# Get the response
+$response = $request.GetResponse()
 
-Let's create lasting memories and spread the warmth of the season together!
+# Read the response stream
+$reader = New-Object System.IO.StreamReader($response.GetResponseStream())
 
-Best regards,
-[Your Name]
-[Your Contact Information, if needed]
+# Read the response content
+$responseText = $reader.ReadToEnd()
 
+# Close the reader and response
+$reader.Close()
+$response.Close()
 
-substring(IPColumn, 0, add(indexOf(IPColumn, '.', add(indexOf(IPColumn, '.', indexOf(IPColumn, '.') + 1), 1)), 1))
-
+# Process the response text as needed
+Write-Host "Response text:"
+Write-Host $responseText
