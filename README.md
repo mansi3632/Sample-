@@ -1,104 +1,74 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Windows;
+using Newtonsoft.Json.Linq;
 
-namespace YourNamespace
+public class ApiTokenFetcher
 {
-    public partial class MainWindow : Window
+    private static readonly HttpClient client = new HttpClient();
+
+    public static async Task<string> FetchApiTokenAsync(string apiUrl, string apiKey)
     {
-        private string apiUrl = "https://your-api-endpoint";
-        private string accessToken = "your-access-token";
+        // Prepare the request
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, apiUrl);
+        requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        
+        // If the API expects the key in the headers
+        requestMessage.Headers.Add("x-api-key", apiKey);
 
-        public string ApiData { get; set; }
+        // If the API expects the key in the body (often in OAuth flows)
+        var content = new StringContent("{ \"apiKey\": \"" + apiKey + "\" }", System.Text.Encoding.UTF8, "application/json");
+        requestMessage.Content = content;
 
-        public MainWindow()
+        // Send the request
+        HttpResponseMessage response = await client.SendAsync(requestMessage);
+
+        // Ensure the response indicates success
+        response.EnsureSuccessStatusCode();
+
+        // Parse the response body as a JSON object
+        var responseBody = await response.Content.ReadAsStringAsync();
+        var jsonResponse = JObject.Parse(responseBody);
+
+        // Extract the token from the response
+        string token = jsonResponse["access_token"]?.ToString();
+
+        if (string.IsNullOrEmpty(token))
         {
-            InitializeComponent();
-            DataContext = this;
+            throw new Exception("Token not found in the response.");
         }
 
-        private async void FetchDataButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-                    HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string content = await response.Content.ReadAsStringAsync();
-                        ApiData = content;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error fetching data: " + response.StatusCode);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred: " + ex.Message);
-            }
-        }
+        return token;
     }
 }
 
 
 
-<Window x:Class="YourNamespace.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:YourNamespace"
-        Title="MainWindow" Height="450" Width="800"
-        Loaded="Window_Loaded">
-    <Grid>
-        <TextBlock x:Name="textBlock" Text="{Binding ApiData}" />
-    </Grid>
-</Window>
-
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Windows;
-
-namespace YourNamespace
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        private string apiUrl = "https://your-api-endpoint";
-        private string accessToken = "your-access-token";
+        InitializeComponent();
+        FetchAndUseApiToken();
+    }
 
-        public string ApiData { get; set; }
+    private async void FetchAndUseApiToken()
+    {
+        string apiUrl = "https://example.com/token";
+        string apiKey = "your-api-key-here";
 
-        public MainWindow()
+        try
         {
-            InitializeComponent();
-            DataContext = this;
-            Loaded += Window_Loaded;
+            string token = await ApiTokenFetcher.FetchApiTokenAsync(apiUrl, apiKey);
+
+            // Use the token, for example, setting it to a TextBlock or using it for further API calls
+            Console.WriteLine("Fetched Token: " + token);
         }
-
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        catch (Exception ex)
         {
-            try
-            {
-                // ... (rest of the code from the previous response)
-            }
-            catch (Exception ex)
-            {
-                // ... (rest of the code from the previous response)
-            }
+            Console.WriteLine("Error fetching token: " + ex.Message);
         }
     }
 }
 
-
-dynamic jsonData = JsonSerializer.Deserialize<dynamic>(content);
-
-            // Access the specific field
-            string specificFieldValue = jsonData.SpecificField;
-
-            // Update the TextBlock
-            textBlock.Text = specificFieldValue
