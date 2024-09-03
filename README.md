@@ -1,29 +1,95 @@
-# Replace with your actual API URL and token
-$apiUrl = "https://api.example.com/data"
-$token = "your_token"
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Windows;
 
-# Create a WebRequest object
-$request = [System.Net.WebRequest]::Create($apiUrl)
+namespace YourNamespace
+{
+    public partial class MainWindow : Window
+    {
+        private string apiUrl = "https://your-api-endpoint";
+        private string accessToken = "your-access-token";
 
-# Set the method to GET
-$request.Method = "GET"
+        public string ApiData { get; set; }
 
-# Set the authorization header with the token
-$request.Headers.Add("Authorization", "Bearer $token")
+        public MainWindow()
+        {
+            InitializeComponent();
+            DataContext = this;
+        }
 
-# Get the response
-$response = $request.GetResponse()
+        private async void FetchDataButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
 
-# Read the response stream
-$reader = New-Object System.IO.StreamReader($response.GetResponseStream())
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string content = await response.Content.ReadAsStringAsync();
+                        ApiData = content;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error fetching data: " + response.StatusCode);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
+        }
+    }
+}
 
-# Read the response content
-$responseText = $reader.ReadToEnd()
 
-# Close the reader and response
-$reader.Close()
-$response.Close()
 
-# Process the response text as needed
-Write-Host "Response text:"
-Write-Host $responseText
+<Window x:Class="YourNamespace.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:YourNamespace"
+        Title="MainWindow" Height="450" Width="800"
+        Loaded="Window_Loaded">
+    <Grid>
+        <TextBlock x:Name="textBlock" Text="{Binding ApiData}" />
+    </Grid>
+</Window>
+
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace YourNamespace
+{
+    public partial class MainWindow : Window
+    {
+        private string apiUrl = "https://your-api-endpoint";
+        private string accessToken = "your-access-token";
+
+        public string ApiData { get; set; }
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            DataContext = this;
+            Loaded += Window_Loaded;
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // ... (rest of the code from the previous response)
+            }
+            catch (Exception ex)
+            {
+                // ... (rest of the code from the previous response)
+            }
+        }
+    }
+}
