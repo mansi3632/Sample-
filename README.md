@@ -1,15 +1,16 @@
-<?xml version="1.0" encoding="utf-8" ?>
+Currently I am putting most of my efforts in Amelia side of things. Trying to develop an automation which takes the information from sharepoint or gsow and create issues in gitlab. Earlier I managed to create a workflow which does the same thing but as sharepoint integration is not present in amelia , we are going to use powershell script and see if we can achieve our goal. Then login enterprise activities are in progress, right now I am creating script for onedrive application.
+
+
+
+
+
+
+
+
+
+?xml version="1.0" encoding="utf-8" ?>
 <ApiConfiguration>
-  <ApiUrl>https://example.com/token</ApiUrl>
-  <ApiKey>your-api-key-here</ApiKey>
-</ApiConfiguration>
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-public async Task UseApiTokenAsync()
 {
     // Specify the path to your XML configuration file
     string xmlFilePath = "ApiConfig.xml";  // Adjust the path as needed
